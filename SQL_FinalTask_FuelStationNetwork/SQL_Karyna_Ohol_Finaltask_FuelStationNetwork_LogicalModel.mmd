@@ -1,0 +1,127 @@
+---
+config:
+  theme: default
+---
+erDiagram
+    STATION {
+        int station_id PK
+        varchar(100) station_name "NOT NULL"
+        varchar(200) address "NOT NULL"
+        varchar(100) city "NOT NULL"
+        varchar(50) state_province "NOT NULL"
+        varchar(20) postal_code "NOT NULL"
+        varchar(50) country "NOT NULL"
+        varchar(15) phone "NOT NULL"
+        decimal(9) latitude "NOT NULL"
+        decimal(9) longitude "NOT NULL"
+        time opening_time "NOT NULL"
+        time closing_time "NOT NULL"
+        boolean is_24hr "DEFAULT FALSE"
+        int owner_id FK "NOT NULL"
+        datetime created_at "DEFAULT CURRENT_TIMESTAMP"
+        datetime updated_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    FUEL_TYPE {
+        int fuel_type_id PK
+        varchar(50) fuel_name "NOT NULL, UNIQUE"
+        varchar(255) description
+        boolean is_active "DEFAULT TRUE"
+        datetime created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    STATION_FUEL {
+        int station_fuel_id PK
+        int station_id FK "NOT NULL"
+        int fuel_type_id FK "NOT NULL"
+        decimal(10) regular_price "NOT NULL"
+        decimal(10) discounted_price
+        int current_quantity "NOT NULL, DEFAULT 0"
+        int capacity "NOT NULL"
+        boolean is_available "DEFAULT TRUE"
+        datetime last_updated "DEFAULT CURRENT_TIMESTAMP"
+    }
+    CUSTOMER {
+        int customer_id PK
+        varchar(100) first_name "NOT NULL"
+        varchar(100) last_name "NOT NULL"
+        varchar(100) email UK "UNIQUE, NOT NULL"
+        varchar(15) phone "NOT NULL"
+        varchar(200) address
+        varchar(100) city
+        varchar(50) state_province
+        varchar(20) postal_code
+        varchar(50) country
+        datetime registration_date "DEFAULT CURRENT_TIMESTAMP"
+        boolean has_loyalty_card "DEFAULT FALSE"
+        boolean is_active "DEFAULT TRUE"
+    }
+    EMPLOYEE {
+        int employee_id PK
+        varchar(100) first_name "NOT NULL"
+        varchar(100) last_name "NOT NULL"
+        varchar(100) email UK "UNIQUE, NOT NULL"
+        varchar(15) phone "NOT NULL"
+        varchar(200) address "NOT NULL"
+        varchar(100) city "NOT NULL"
+        varchar(50) state_province "NOT NULL"
+        varchar(20) postal_code "NOT NULL"
+        varchar(50) country "NOT NULL"
+        date hire_date "NOT NULL"
+        date termination_date
+        int station_id FK "NOT NULL"
+        varchar(50) position "NOT NULL"
+        decimal(10) hourly_rate "NOT NULL"
+        boolean is_active "DEFAULT TRUE"
+    }
+    FUEL_SALE {
+        int sale_id PK
+        int station_id FK "NOT NULL"
+        int fuel_type_id FK "NOT NULL"
+        int customer_id FK
+        int employee_id FK "NOT NULL"
+        datetime sale_datetime "NOT NULL, DEFAULT CURRENT_TIMESTAMP"
+        decimal(10) quantity_sold "NOT NULL"
+        decimal(10) unit_price "NOT NULL"
+        decimal(10) total_amount "NOT NULL"
+        varchar(50) payment_method "NOT NULL"
+        varchar(100) payment_reference
+        boolean loyalty_discount_applied "DEFAULT FALSE"
+    }
+    SUPPLIER {
+        int supplier_id PK
+        varchar(100) supplier_name UK "NOT NULL, UNIQUE"
+        varchar(100) contact_person "NOT NULL"
+        varchar(100) email "NOT NULL"
+        varchar(15) phone "NOT NULL"
+        varchar(200) address "NOT NULL"
+        varchar(100) city "NOT NULL"
+        varchar(50) state_province "NOT NULL"
+        varchar(20) postal_code "NOT NULL"
+        varchar(50) country "NOT NULL"
+        boolean is_active "DEFAULT TRUE"
+        datetime created_at "DEFAULT CURRENT_TIMESTAMP"
+    }
+    FUEL_DELIVERY {
+        int delivery_id PK
+        int station_id FK "NOT NULL"
+        int supplier_id FK "NOT NULL"
+        int fuel_type_id FK "NOT NULL"
+        datetime delivery_date "NOT NULL"
+        decimal(10) quantity "NOT NULL"
+        decimal(10) unit_price "NOT NULL"
+        decimal(10) total_cost "NOT NULL"
+        varchar(100) invoice_number UK "UNIQUE, NOT NULL"
+        boolean is_received "DEFAULT FALSE"
+        varchar(100) received_by
+        datetime received_at
+        varchar(255) notes
+    }
+    STATION ||--o{ STATION_FUEL : "offers"
+    FUEL_TYPE ||--o{ STATION_FUEL : "available_as"
+    STATION ||--o{ EMPLOYEE : "employs"
+    STATION ||--o{ FUEL_SALE : "sells"
+    FUEL_TYPE ||--o{ FUEL_SALE : "sold_as"
+    CUSTOMER ||--o{ FUEL_SALE : "purchases"
+    EMPLOYEE ||--o{ FUEL_SALE : "processes"
+    STATION ||--o{ FUEL_DELIVERY : "receives"
+    SUPPLIER ||--o{ FUEL_DELIVERY : "supplies"
+    FUEL_TYPE ||--o{ FUEL_DELIVERY : "delivered_as"

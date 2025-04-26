@@ -1,0 +1,15 @@
+---
+config:
+  theme: default
+---
+erDiagram
+    STATION ||--o{ STATION_FUEL: "offers"
+    FUEL_TYPE ||--o{ STATION_FUEL: "available_as"
+    STATION ||--o{ EMPLOYEE: "employs"
+    STATION ||--o{ FUEL_SALE: "sells"
+    FUEL_TYPE ||--o{ FUEL_SALE: "sold_as"
+    CUSTOMER ||--o{ FUEL_SALE: "purchases"
+    EMPLOYEE ||--o{ FUEL_SALE: "processes"
+    STATION ||--o{ FUEL_DELIVERY: "receives"
+    SUPPLIER ||--o{ FUEL_DELIVERY: "supplies"
+    FUEL_TYPE ||--o{ FUEL_DELIVERY: "delivered_as"
